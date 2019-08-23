@@ -27,9 +27,9 @@ describe 'get states route', type: :request do
     end
   end
   it 'returns the created state' do
-    body = JSON.parse(response.body)
+    body = JSON.parse(response.body).first
     state = State.all.first
-    expect(body.first['id']).to eq(state.id)
-    expect(body.first['name']).to eq(state.name)
+    expect(body['id']).to eq(state.id)
+    expect(body['name']).to eq(state.name)
   end
 end
