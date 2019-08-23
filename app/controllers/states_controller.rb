@@ -2,41 +2,41 @@ class StatesController < ApplicationController
   def index
       @states = State.all
       json_response @states
-    end
+  end
 
-    def show
-      @state = State.find params[:id]
-      json_response @state
-    end
+  def show
+    @state = State.find params[:id]
+    json_response @state
+  end
 
-    def create
-      @state = State.create! state_params
-      json_response @state, :created
-    end
+  def create
+    @state = State.create! state_params
+    json_response @state, :created
+  end
 
-    def update
-      @state = State.find params[:id]
-      if @state.update! state_params
-        render status: :ok, json: {
-          message: "State updated successfully!"
-        }
-      end
+  def update
+    @state = State.find params[:id]
+    if @state.update! state_params
+      render status: :ok, json: {
+        message: "State updated successfully!"
+      }
     end
+  end
 
-    def destroy
-      @state = State.find params[:id]
-      if @state.destroy!
-        render status: :ok, json: {
-          message: "State destroyed successfully!"
-        }
-      end
+  def destroy
+    @state = State.find params[:id]
+    if @state.destroy!
+      render status: :ok, json: {
+        message: "State destroyed successfully!"
+      }
     end
+  end
 
-    private
+  private
 
-    def state_params
-      params.permit :name
-    end
+  def state_params
+    params.permit :name
+  end
 
 
 end
