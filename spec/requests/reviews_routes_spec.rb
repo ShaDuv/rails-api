@@ -24,7 +24,6 @@ describe 'post state_parks route', type: :request do
   park = nil
 
   before do
-    state.parks.destroy_all
     post "/states/#{state.id}/parks", params: { name: name, address: address, city: city }
     state = State.find(state.id)
     park = state.parks[0]
