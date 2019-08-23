@@ -35,7 +35,7 @@ class StatesController < ApplicationController
     private
 
     def state_params
-      params.permit :name, :city, :country
+      params.permit :name
     end
 
 
