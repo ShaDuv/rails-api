@@ -17,59 +17,55 @@ describe 'get state_parks route', type: :request do
 end
 
 describe 'post state_parks route', type: :request do
-  let(:state) { FactoryBot.create(:state) }
-  name = "Epic Park"
-  address = "1234 Main"
-  city = "Middle Of Nowhere!"
-
+  let!(:state) { FactoryBot.create(:state) }
+  let(:new_park) { { name: "Epic Park", address: "1234 Main", city: "Middle Of Nowhere!"} }
 
   before do
-    state.parks.destroy_all
-    post "/states/#{state.id}/parks", params: { name: name, address: address, city: city }
+    post "/states/#{state.id}/parks", params: new_park
+  end
+
+  it 'returns status code 200' do
+    expect(response).to have_http_status(:success)
   end
 
   it 'creates a new park' do
-    park = state.parks[0]
     expect(state.parks.count).to eq(1)
-    expect(park.name).to eq(name)
-    expect(park.address).to eq(address)
-    expect(park.city).to eq(city)
   end
 
   it 'returns the created park' do
-    expect_json_to_eq_object(response, park)
+    expect_json_to_eq_object(response, state.parks.first)
   end
 end
 
 describe 'get state_park route', type: :request do
+  let(:state) { FactoryBot.create(:state_with_parks) }
+  let(:park) { state.parks.first}
   it 'returns the park with the given id for the state with the given state_id' do
-    let(:state) { FactoryBot.create(:state_with_parks) }
-    park = state.parks[0]
-
     get "/states/#{state.id}/parks/#{park.id}"
-    expect_json_to_eq_object(response, park)
+    expect_json_to_eq_object(response, state.parks.first)
   end
 end
 
 describe 'patch state_park route', type: :request do
+  let(:state) { FactoryBot.create(:state_with_parks) }
+  let(:park) { state.parks.first}
+  let(:info) {{ name: "Slightly Less Epic Park",
+                       address: "4321 Cow Patty Ave",
+                       city: "Probably Portland"}}
+
   it 'updates the park with the given id for the state with the given state_id, using the given parameters' do
-    let(:state) { FactoryBot.create(:state_with_parks) }
-    park = state.parks[0]
-    name = "Slightly Less Epic Park"
-    address = "4321 Cow Patty Ave"
-    city = "Probably Portland"
-    patch "/states/#{state.id}/parks/#{park.id}", params: { name: name, address: address, body: city, rating: new_rating }
-    park = state.parks.find(park.id)
-    expect(park.name).to eq(name)
-    expect(park.address).to eq(address)
-    expect(park.city).to eq(city)
+    patch "/states/#{state.id}/parks/#{park.id}", params: info
+    updated_park = state.parks.find(park.id)
+    expect(updated_park.name).to eq(info[:name])
+    expect(updated_park.address).to eq(info[:address])
+    expect(updated_park.city).to eq(info[:city])
   end
 end
 
 describe 'delete state_park route', type: :request do
+  let(:state) { FactoryBot.create(:state_with_parks) }
+  let!(:park) { state.parks.first}
   it 'destroys the park with the given id for the state with the given state_id' do
-    let(:state) { FactoryBot.create(:state_with_parks) }
-    park = state.parks[0]
     delete "/states/#{state.id}/parks/#{park.id}"
     expect(response).to have_http_status(:success)
     get "/states/#{state.id}/parks/#{park.id}"
