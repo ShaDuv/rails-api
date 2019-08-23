@@ -1,8 +1,8 @@
 require 'rails_helper'
 
 describe 'get state_parks route', type: :request do
+  let(:state) { FactoryBot.create(:state_with_parks) }
   before do
-    state = FactoryBot.create(:state_with_parks)
     get "/states/#{state.id}/parks"
   end
 
@@ -11,25 +11,25 @@ describe 'get state_parks route', type: :request do
   end
 
   it 'returns all parks for the state with the given id' do
-    expect(JSON.parse(response.body).size).to eq(12)
+    expect(JSON.parse(response.body).size).to eq(state.parks.count)
   end
 
 end
 
 describe 'post state_parks route', type: :request do
+  let(:state) { FactoryBot.create(:state) }
   name = "Epic Park"
   address = "1234 Main"
   city = "Middle Of Nowhere!"
-  state = FactoryBot.create(:state)
-  park = nil
+
 
   before do
+    state.parks.destroy_all
     post "/states/#{state.id}/parks", params: { name: name, address: address, city: city }
-    state = State.find(state.id)
-    park = state.parks[0]
   end
 
   it 'creates a new park' do
+    park = state.parks[0]
     expect(state.parks.count).to eq(1)
     expect(park.name).to eq(name)
     expect(park.address).to eq(address)
@@ -43,7 +43,7 @@ end
 
 describe 'get state_park route', type: :request do
   it 'returns the park with the given id for the state with the given state_id' do
-    state = FactoryBot.create(:state_with_parks)
+    let(:state) { FactoryBot.create(:state_with_parks) }
     park = state.parks[0]
 
     get "/states/#{state.id}/parks/#{park.id}"
@@ -53,7 +53,7 @@ end
 
 describe 'patch state_park route', type: :request do
   it 'updates the park with the given id for the state with the given state_id, using the given parameters' do
-    state = FactoryBot.create(:state_with_parks)
+    let(:state) { FactoryBot.create(:state_with_parks) }
     park = state.parks[0]
     name = "Slightly Less Epic Park"
     address = "4321 Cow Patty Ave"
@@ -68,7 +68,7 @@ end
 
 describe 'delete state_park route', type: :request do
   it 'destroys the park with the given id for the state with the given state_id' do
-    state = FactoryBot.create(:state_with_parks)
+    let(:state) { FactoryBot.create(:state_with_parks) }
     park = state.parks[0]
     delete "/states/#{state.id}/parks/#{park.id}"
     expect(response).to have_http_status(:success)
