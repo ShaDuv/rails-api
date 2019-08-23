@@ -12,4 +12,12 @@ describe 'get states route', type: :request do
   it 'returns status code 200' do
     expect(response).to have_http_status(:success)
   end
+
+  describe 'post states route', type: :request do
+    name = "Test State"
+    before do
+      State.destroy_all
+      post '/states', params: { name: name }
+    end
+  end
 end
