@@ -3,6 +3,7 @@ FactoryBot.define do
     name { Faker::Books::Lovecraft }
     address { Faker::Address.street_address}
     city { Faker::Address.city }
+    state
   end
 
   factory :state do
