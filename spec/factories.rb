@@ -1,6 +1,6 @@
 FactoryBot.define do
   factory :park do
-    name { Faker::Books::Lovecraft }
+    name { Faker::Books::Lovecraft.tome   }
     address { Faker::Address.street_address}
     city { Faker::Address.city }
     state

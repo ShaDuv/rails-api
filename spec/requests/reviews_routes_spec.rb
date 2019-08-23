@@ -2,16 +2,18 @@ require 'rails_helper'
 
 describe 'get state_parks route', type: :request do
   state = FactoryBot.create(:state_with_parks)
-
-  before { get "/states/#{state.id}/parks" }
-
-  it 'returns all parks for the state with the given id' do
-    expect(JSON.parse(response.body).size).to eq(state.parks.count)
+  before do
+    get "/states/#{state.id}/parks"
   end
 
   it 'returns status code 200' do
     expect(response).to have_http_status(:success)
   end
+
+  it 'returns all parks for the state with the given id' do
+    expect(JSON.parse(response.body).size).to eq(state.parks.count)
+  end
+
 end
 
 describe 'post state_parks route', type: :request do
