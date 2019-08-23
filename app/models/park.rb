@@ -1,3 +1,3 @@
 class Park < ApplicationRecord
-  belongs_to :place, dependent: :destroy
+  belongs_to :place
 end
