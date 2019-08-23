@@ -1,8 +1,8 @@
 require 'rails_helper'
 
 describe 'get state_parks route', type: :request do
-  state = FactoryBot.create(:state_with_parks)
   before do
+    state = FactoryBot.create(:state_with_parks)
     get "/states/#{state.id}/parks"
   end
 
@@ -11,7 +11,7 @@ describe 'get state_parks route', type: :request do
   end
 
   it 'returns all parks for the state with the given id' do
-    expect(JSON.parse(response.body).size).to eq(state.parks.count)
+    expect(JSON.parse(response.body).size).to eq(12)
   end
 
 end
